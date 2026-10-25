@@ -1,4 +1,5 @@
 import { createAuthClient } from 'better-auth/client';
+import { genericOAuthClient } from 'better-auth/client/plugins';
 import { inferAdditionalFields } from 'better-auth/client/plugins';
 import type { Auth } from '@mocinno/backend/auth';
 
@@ -8,7 +9,7 @@ import { getRequestEvent } from '$app/server';
 
 const authServer = createAuthClient({
 	baseURL: `${APP_SECURE ? 'https' : 'http'}://${APP_DOMAIN}`,
-	plugins: [inferAdditionalFields<Auth>()],
+	plugins: [inferAdditionalFields<Auth>(), genericOAuthClient()],
 	fetchOptions: {
 		onSuccess: (ctx) => {
 			const authToken = ctx.response.headers.get('set-auth-token'); // get the token from the response headers

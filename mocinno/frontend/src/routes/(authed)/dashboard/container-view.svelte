@@ -1,15 +1,15 @@
 <script lang="ts">
-	import * as Table from '#lib/components/ui/table/index.js';
-	import { Separator } from '#lib/components/ui/separator/index.js';
-	import * as Alert from '#lib/components/ui/alert/index.js';
-	import { Button } from '#lib/components/ui/button/index.js';
-	import { Spinner } from '#lib/components/ui/spinner/index.js';
-	import ConfirmDialog from '#lib/components/confirm-dialog.svelte';
-	import type { RouterOutput } from '#lib/trpc.js';
-	import trpc from '#lib/trpc.js';
-	import { getUserContext } from '#lib/user.js';
-	import authClient from '#lib/auth.js';
-	import { refreshAll } from '$app/navigation';
+	import * as Table from '$lib/components/ui/table/index.js';
+	import { Separator } from '$lib/components/ui/separator/index.js';
+	import * as Alert from '$lib/components/ui/alert/index.js';
+	import { Button } from '$lib/components/ui/button/index.js';
+	import { Spinner } from '$lib/components/ui/spinner/index.js';
+	import ConfirmDialog from '$lib/components/confirm-dialog.svelte';
+	import type { RouterOutput } from '$lib/trpc';
+	import trpc from '$lib/trpc';
+	import { getUserContext } from '$lib/user';
+	import authClient from '$lib/auth';
+	import { invalidateAll } from '$app/navigation';
 	import { getFlash } from 'sveltekit-flash-message';
 	import { page } from '$app/state';
 
@@ -36,8 +36,8 @@
 	const session = getUserContext();
 
 	const requestSudo = async () => {
-		authClient.signIn.social({
-			provider: 'hackclub',
+		authClient.signIn.oauth2({
+			providerId: 'hackclub',
 			errorCallbackURL: '/dashboard',
 			callbackURL: '/dashboard',
 			additionalData: {
@@ -50,34 +50,34 @@
 		buttonState.delete = true;
 		deleteConfirmOpen = false;
 		await trpc.user.delete.mutate();
-		await refreshAll();
+		await invalidateAll();
 		buttonState.delete = false;
 	};
 
 	const exitSudo = async () => {
 		await trpc.user.exitSudo.mutate();
-		await refreshAll();
+		await invalidateAll();
 		$flash = undefined;
 	};
 
 	const stopContainer = async () => {
 		buttonState.stop = true;
 		await trpc.user.stop.mutate();
-		await refreshAll();
+		await invalidateAll();
 		buttonState.stop = false;
 	};
 
 	const startContainer = async () => {
 		buttonState.start = true;
 		await trpc.user.start.mutate();
-		await refreshAll();
+		await invalidateAll();
 		buttonState.start = false;
 	};
 
 	const rebootContainer = async () => {
 		buttonState.reboot = true;
 		await trpc.user.reboot.mutate();
-		await refreshAll();
+		await invalidateAll();
 		buttonState.reboot = false;
 	};
 </script>

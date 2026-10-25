@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { Button } from '#lib/components/ui/button/index.js';
-	import { Spinner } from '#lib/components/ui/spinner/index.js';
-	import { refreshAll } from '$app/navigation';
+	import { Button } from '$lib/components/ui/button/index.js';
+	import { Spinner } from '$lib/components/ui/spinner/index.js';
+	import { invalidateAll } from '$app/navigation';
 	import { APP_DOMAIN, APP_SECURE } from '$app/env/public';
 	import { getFlash } from 'sveltekit-flash-message';
 	import { page } from '$app/state';
-	import trpc from '#lib/trpc.js';
+	import trpc from '$lib/trpc';
 
 	const flash = getFlash(page);
 
@@ -18,7 +18,7 @@
 		const result = await trpc.admin.deleteInvite.mutate({
 			code
 		});
-		await refreshAll();
+		await invalidateAll();
 		$flash = {
 			message: result.message,
 			type: result.success ? 'success' : 'error'

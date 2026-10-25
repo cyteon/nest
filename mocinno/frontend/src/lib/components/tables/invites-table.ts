@@ -1,32 +1,30 @@
-import { createColumnHelper, renderComponent } from '@tanstack/svelte-table';
-import type { DataTableFeatures } from './admin-table-features.js';
-import { type RouterOutput } from '#lib/trpc.js';
+import type { ColumnDef } from '@tanstack/table-core';
+import { renderComponent } from '$lib/components/ui/data-table/index.js';
 import InvitesTableActions from './invites-table-actions.svelte';
+import { type RouterOutput } from '$lib/trpc';
 
-const columnHelper = createColumnHelper<
-	DataTableFeatures,
-	RouterOutput['admin']['getInvites']['data'][number]
->();
-
-export const columns = columnHelper.columns([
-	columnHelper.accessor('code', {
+export const columns: ColumnDef<RouterOutput['admin']['getInvites']['data'][number]>[] = [
+	{
+		accessorKey: 'code',
 		header: 'Code'
-	}),
-	columnHelper.accessor('uses', {
+	},
+	{
+		accessorKey: 'uses',
 		header: 'Uses'
-	}),
-	columnHelper.accessor('max_uses', {
-		cell: (info) => info.getValue() ?? 'Unlimited',
+	},
+	{
+		accessorFn: (row) => row.max_uses ?? 'Unlimited',
 		header: 'Max Uses'
-	}),
-	columnHelper.accessor('expires_at', {
-		cell: (info) => info.getValue()?.toDateString(),
+	},
+	{
+		accessorFn: (row) => (row.expires_at ? row.expires_at.toDateString() : 'Never'),
 		header: 'Expires'
-	}),
-	columnHelper.accessor('admin_email', {
+	},
+	{
+		accessorKey: 'admin_email',
 		header: 'Created By'
-	}),
-	columnHelper.display({
+	},
+	{
 		id: 'actions',
 		cell: ({ row }) => {
 			return renderComponent(InvitesTableActions, {
@@ -34,5 +32,5 @@ export const columns = columnHelper.columns([
 			});
 		},
 		header: 'Actions'
-	})
-]);
+	}
+];

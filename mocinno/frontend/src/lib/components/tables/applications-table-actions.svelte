@@ -3,13 +3,13 @@
 </script>
 
 <script lang="ts">
-	import { Button } from '#lib/components/ui/button/index.js';
-	import { Spinner } from '#lib/components/ui/spinner/index.js';
-	import { refreshAll } from '$app/navigation';
-	import { type RouterOutput } from '#lib/trpc.js';
+	import { Button } from '$lib/components/ui/button/index.js';
+	import { Spinner } from '$lib/components/ui/spinner/index.js';
+	import { invalidateAll } from '$app/navigation';
+	import { type RouterOutput } from '$lib/trpc';
 	import { getFlash } from 'sveltekit-flash-message';
 	import { page } from '$app/state';
-	import trpc from '#lib/trpc.js';
+	import trpc from '$lib/trpc';
 
 	const flash = getFlash(page);
 
@@ -33,7 +33,7 @@
 			id,
 			action
 		});
-		await refreshAll();
+		await invalidateAll();
 		$flash = {
 			message: result.message,
 			type: result.success ? 'success' : 'error'
